@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111719">
+<meta name="description" content="JANコードをカメラにかざして8桁・13桁のバーコードを読み取るスキャナー">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="JAN SCOPE">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./assets/icon-192.png">
+<link rel="stylesheet" href="./style.css">
+<title>JAN SCOPE バーコードリーダー</title>
+<script src="./vendor/quagga.min.js" defer></script>
+<script src="./vendor/zxing-reader.js" defer></script>
+<script src="./app.js" type="module"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="JAN SCOPE"><span class="brand-mark" aria-hidden="true">▥</span>JAN<span>SCOPE</span></a>
+  <div class="header-actions">
+    <button class="icon-button" id="help-open" aria-label="使い方を開く">?</button>
+    <button id="install" class="quiet-button">アプリに追加</button>
+  </div>
+</header>
+
+<main>
+  <div class="workspace">
+    <section class="scanner" aria-labelledby="scan-title">
+      <div class="section-bar scanner-status-bar">
+        <h2 id="scan-title"><span class="step">01</span>スキャン</h2>
+        <span id="status-chip" class="chip">待機中</span>
+      </div>
+
+      <div class="viewfinder" id="viewfinder">
+        <video id="video" muted playsinline autoplay aria-label="カメラ映像" hidden></video>
+        <canvas id="photo-preview" hidden aria-label="読み取り中の画像"></canvas>
+
+        <div class="camera-placeholder" id="placeholder">
+          <svg viewBox="0 0 80 58" width="80" height="58" fill="none" aria-hidden="true">
+            <path d="M4 18V4h14M62 4h14v14M76 40v14H62M18 54H4V40" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 17v24m6-24v24m9-24v24m5-24v24m8-24v24m5-24v24m7-24v24" stroke="currentColor" stroke-width="3"/>
+          </svg>
+          <h3>バーコードをカメラに映してください</h3>
+          <p>画面内のどこにあっても自動で検出します</p>
+          <button id="start" class="primary-button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h4l2-3h4l2 3h4v13H4z"/><circle cx="12" cy="13" r="3"/></svg>
+            カメラを起動
+          </button>
+          <small>初回のみ、カメラへのアクセスを許可してください</small>
+        </div>
+
+        <div class="view-caption" id="view-caption">画面内を自動スキャン · EAN-8 / EAN-13</div>
+        <div id="success-flash" aria-hidden="true">✓</div>
+      </div>
+
+      <div class="capture-tools">
+        <button id="stop" class="tool-button" disabled>■ <span>停止</span></button>
+        <button id="sound" class="tool-button" aria-pressed="true">♪ <span>音 ON</span></button>
+        <label class="camera-select">
+          <span class="sr-only">使用するカメラ</span>
+          <select id="camera" aria-label="使用するカメラ" disabled><option value="">---</option></select>
+        </labe>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite">画像は端末内で処理され、外部サーバに送信されません。</div>
+    </section>
+
+    <section class="results-panel" id="results-panel" aria-labelledby="results-title" aria-live="polite">
+      <div class="result-success" id="result-success" hidden><span aria-hidden="true">✓</span> 読み取り成功</div>
+      <div class="section-bar">
+        <h2 id="results-title">読み取り結果 <span id="count" class="count">0</span></h2>
+        <div class="result-head-actions">
+          <button id="clear" class="text-button" disabled>クリア</button>
+          <button id="result-dismiss" class="result-dismiss" hidden>スキャンを続ける</button>
+        </div>
+      </div>
+      <div id="results" class="results">
+        <div class="empty-state">
+          <div class="empty-symbol" aria-hidden="true">[ <span>✓</span> ]</div>
+          <h3>見つけたバーコードはこちらに</h3>
+          <p>読み取ったJANコードと検出画像を確認できます。</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div id="result-backdrop" class="result-backdrop" hidden></div>
+
+<dialog id="help">
+  <div class="dialog-heading"><h2>スキャンのヒント</h2><button class="icon-button" data-close="help" aria-label="閉じる">×</button></div>
+  <ol>
+    <li><strong>カメラ画面または「カメラを選択」を押す</strong><p>初回は確認画面で「許可」を選びます。マイクの許可は不要です。</p></li>
+    <li><strong>バーコード全体を映す</strong><p>枠に合わせる必要はありません。左右の白い余白も映し、明るい場所で少し距離を変えてください。</p></li>
+    <li><strong>読み取り結果を確認する</strong><p>成功すると結果カードが前面に表示されます。確認後に「スキャンを続ける」を押してください。</p></li>
+  </ol>
+  <details><summary>カメラが使えないとき</summary><p>アドレス欄のサイト設定でカメラを許可し、ページを再読み込みしてください。iPhoneではSafariのWebサイト設定も確認してください。別のアプリがカメラを使っている場合は閉じてください。</p><p>カメラにはHTTPS接続（開発時はlocalhost）が必要です。アプリ内ブラウザではSafariやChromeで開き直してください。</p></details>
+  <p class="small-note">結果と画像はこのページのメモリ内だけに保持されます。再読み込みで消去されます。音の設定のみ端末に保存します。QRコードは対象外です。</p>
+</dialog>
+
+<dialog id="install-help">
+  <div class="dialog-heading"><h2>アプリとして使う</h2><button class="icon-button" data-close="install-help" aria-label="閉じる">×</button></div>
+  <p><strong>iPhone / iPad</strong><br>Safariで開き、共有メニューから「ホーム画面に追加」を選びます。</p>
+  <p><strong>Mac</strong><br>Safariの「ファイル」→「Dockに追加」、またはChromeのインストールメニューを利用できます（対応バージョン）。</p>
+  <p><strong>Android / Windows</strong><br>ブラウザのメニューから「アプリをインストール」または「ホーム画面に追加」を選びます。</p>
+  <p class="small-note">初回の読み込み完了後は、スキャンをオフラインでも使えます。商品検索リンクの利用にはインターネット接続が必要です。</p>
+</dialog>
+
+<noscript>このアプリではJavaScriptを有効にしてください。</noscript>
+</body>
+</html>
