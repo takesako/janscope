@@ -103,7 +103,7 @@ function addResult(r){
 
   const a=card.querySelector('.result-actions'),y=document.createElement('a'),g=document.createElement('a'),c=document.createElement('button');
   Object.assign(y,{href:yahooURL(r.code),target:'_blank',rel:'noopener',className:'yahoo-link',textContent:'Yahoo!で商品を見る'});
-  Object.assign(g,{href:googleURL(r.code),target:'_blank',rel:'noopener',className:'google-link',textContent:'GoogleでJANコードを検索'});
+  Object.assign(g,{href:googleURL(r.code),target:'_blank',rel:'noopener',className:'google-link',textContent:'Googleで検索する'});
   c.className='copy-button';c.textContent='コピー';
   c.onclick=async()=>{try{await navigator.clipboard.writeText(r.code);c.textContent='コピー済み';setTimeout(()=>c.textContent='コピー',1500)}catch{message('コピーできませんでした。',true)}};
 
