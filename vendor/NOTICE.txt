@@ -1,0 +1,16 @@
+Third-party software bundled with JAN SCOPE
+
+Quagga2 1.12.1 — MIT
+https://github.com/ericblade/quagga2
+See QUAGGA-LICENSE.
+
+zxing-wasm 3.1.4 — MIT (JavaScript wrapper)
+https://github.com/Sec-ant/zxing-wasm
+See ZXING-WASM-LICENSE.
+
+ZXing-C++ and ZXingWasm.cpp — Apache License 2.0
+https://github.com/zxing-cpp/zxing-cpp
+https://github.com/Sec-ant/zxing-wasm/tree/main/src/cpp
+See ZXING-CPP-APACHE-2.0.
+The reader-only WebAssembly build is used. Barcode writers are not included.
+Unmodified upstream binary and JavaScript assets are redistributed.
