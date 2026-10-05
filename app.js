@@ -25,7 +25,7 @@ $('help-open').onclick=()=>$('help').showModal();
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
 
 function constraints(id){
-  const p=innerHeight>innerWidth,w=p?1080:1920,h=p?1440:1080;
+  const p=matchMedia('(orientation:portrait)').matches,w=p?1080:1920,h=p?1440:1080;
   return {audio:false,video:{...(id?{deviceId:{exact:id}}:{facingMode:{ideal:'environment'}}),width:{ideal:w},height:{ideal:h},aspectRatio:{ideal:w/h}}};
 }
 function stop(reset=true){

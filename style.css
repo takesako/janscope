@@ -93,10 +93,6 @@ main{max-width:1440px;margin:0 auto;padding:0 18px 28px}
 .yahoo-link:hover,.google-link:hover {filter: brightness(1.08);transform: translateY(-1px);}
 .copy-button{border:1px solid #dce2e2;color:#455052;background:#fff}
 
-.result-backdrop{position:fixed;inset:0;z-index:80;background:#0008;backdrop-filter:blur(2px);animation:fade-in .22s ease-out}
-.results-panel.result-promoted{position:fixed;z-index:81;top:88px;right:max(18px,calc((100vw - 1440px)/2 + 18px));width:min(410px,calc(100vw - 36px));max-height:calc(100dvh - 112px);min-height:0;box-shadow:0 30px 100px #0009;transform:translateY(-4px) scale(1.015);animation:result-pop .32s cubic-bezier(.2,.8,.2,1)}
-.results-panel.result-promoted .results{max-height:calc(100dvh - 235px)}
-
 Dialog{font-family:inherit}
 dialog{background:#f7f8f8;color:#111718;border:0;border-radius:20px;width:min(520px,calc(100% - 30px));max-height:85dvh;padding:26px;box-shadow:0 24px 80px #0008}
 dialog::backdrop{background:#0009;backdrop-filter:blur(4px)}
@@ -108,6 +104,9 @@ dialog h2{font-size:19px}dialog p{font-size:14px;color:#667275;margin:9px 0 19px
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
 @keyframes result-pop{from{opacity:.2;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(-4px) scale(1.015)}}
 
+@media(orientation:portrait) and (max-width:820px){
+  :root{--camera-aspect:3 / 4}
+}
 @media(max-width:820px){
   .topbar{padding:0 14px;height:62px}.brand{font-size:17px}.brand-mark{font-size:21px}.quiet-button{font-size:11px;padding:7px 10px}.icon-button{width:34px;min-width:34px;min-height:34px}
   main{padding:0 0 18px}.workspace{display:block}.viewfinder{border-radius:0;border-left:0;border-right:0;box-shadow:none}.capture-tools{padding-left:14px;padding-right:14px}.message{padding:0 18px}
